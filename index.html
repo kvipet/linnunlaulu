@@ -24,38 +24,43 @@
 <ul id="resultList"></ul>
 <script>
 function fetchRecordings() {
-	    const species = document.getElementById('speciesInput').value.trim();
-	const apiUrl = `https://xeno-canto.org/api/2/recordings?query=${species}`;
+    const species = document.getElementById('speciesInput').value.trim();
+    const apiUrl = `https://xeno-canto.org/api/2/recordings?query=${species}`;
 
-    fetch(apiUrl)
-		.then(response => response.json())
-		.then(data => {
-			const resultList = document.getElementById('resultList');
-			resultList.innerHTML = '';
-			
-            if (data.recordings.length === 0) {
-				resultList.innerHTML = '<li>Ei äänitteitä löytynyt.</li>';
-				return;
-			}
-			
-			data.recordings.forEach(recording => {
-				console.log("Tallenteen URL: ", recording.file);
+    console.log("Haetaan osoitteesta:", apiUrl); // Tulostetaan API-kutsu
 
-				const fileUrl = recording.file;
-				console.log("URL: ", fileUrl);
-				const listItem = document.createElement('li');
-				listItem.innerHTML = `                    
-				<b>${recording.en} (${recording.gen} ${recording.sp})</b><br>
-				Laatu: ${recording.q} | Kesto: ${recording.length} <br>
-				<a href="${recording.file}" target="_blank">Kuuntele äänite</a>
-				`;                
-				resultList.appendChild(listItem);
-			});        
-		})        
-		.catch(error => {
-			console.error('Virhe haussa:', error);            
-			alert('Äänitteiden hakeminen epäonnistui.');        
-		});
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            console.log("Saadut tiedot:", data); // Tulostetaan kaikki haetut tiedot
+
+            const resultList = document.getElementById('resultList');
+            resultList.innerHTML = '';
+
+            if (data.recordings.length === 0) {
+                resultList.innerHTML = '<li>Ei äänitteitä löytynyt.</li>';
+                return;
+            }
+
+            data.recordings.forEach(recording => {
+                console.log("Tallenteen alkuperäinen URL:", recording.file); // Näyttää alkuperäisen linkin
+
+                const fileUrl = recording.file.startsWith('http') ? recording.file : 'https:' + recording.file;
+                console.log("Korjattu URL:", fileUrl); // Näyttää lopullisen linkin
+
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `
+                    <b>${recording.en} (${recording.gen} ${recording.sp})</b><br>
+                    Laatu: ${recording.q} | Kesto: ${recording.length} <br>
+                    <a href="${fileUrl}" target="_blank">Kuuntele äänite</a>
+                `;
+                resultList.appendChild(listItem);
+            });
+        })
+        .catch(error => {
+            console.error('Virhe haussa:', error);
+            alert('Äänitteiden hakeminen epäonnistui.');
+        });
 }
 </script>
 </body></html>
