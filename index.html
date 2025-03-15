@@ -49,11 +49,21 @@ function fetchRecordings() {
                 console.log("Korjattu URL:", fileUrl); // Näyttää lopullisen linkin
 
                 const listItem = document.createElement('li');
+                const link = document.createElement('a');
+                link.href = fileUrl;
+                link.target = "_blank";
+                link.textContent = "Kuuntele äänite";
+
+                // Lisätään lokitus klikattaessa linkkiä
+                link.addEventListener("click", (event) => {
+                    console.log("Linkkiä klikattu, URL:", fileUrl);
+                });
+
                 listItem.innerHTML = `
                     <b>${recording.en} (${recording.gen} ${recording.sp})</b><br>
                     Laatu: ${recording.q} | Kesto: ${recording.length} <br>
-                    <a href="${fileUrl}" target="_blank">Kuuntele äänite</a>
                 `;
+                listItem.appendChild(link);
                 resultList.appendChild(listItem);
             });
         })
