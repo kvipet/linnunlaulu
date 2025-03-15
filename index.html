@@ -43,7 +43,7 @@ function fetchRecordings() {
 				listItem.innerHTML = `                    
 				<b>${recording.en} (${recording.gen} ${recording.sp})</b><br>
 				Laatu: ${recording.q} | Kesto: ${recording.length} <br>
-				<a href="https:${recording.file}" target="_blank">Kuuntele äänite</a>
+				<a href="${recording.file}" target="_blank">Kuuntele äänite</a>
 				`;                
 				resultList.appendChild(listItem);
 			});        
