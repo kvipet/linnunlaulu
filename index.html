@@ -39,6 +39,10 @@ function fetchRecordings() {
 			}
 			
 			data.recordings.forEach(recording => {
+				console.log("Tallenteen URL: ", recording.file);
+
+				const fileUrl = recording.file;
+				console.log("URL: ", fileUrl);
 				const listItem = document.createElement('li');
 				listItem.innerHTML = `                    
 				<b>${recording.en} (${recording.gen} ${recording.sp})</b><br>
