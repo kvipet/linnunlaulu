@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>    
+<meta charset="UTF-8">    
+<meta name="viewport" content="width=device-width, initial-scale=1.0">    
+<title>Xeno-canto äänitteen haku</title>    
+<style>        
+	body { font-family: Arial, sans-serif; margin: 20px; }        
+	h1 { color: #2c3e50; }        
+	button { padding: 10px 20px; background-color: #3498db; color: #fff; border: none; cursor: pointer; }        
+	button:hover { background-color: #2980b9; }        
+	ul { list-style: none; padding: 0; }        
+	li { margin: 10px 0; }    
+</style>
+</head>
+
+<body>
+<h1>Xeno-canto äänitteen haku</h1>
+<p>Syötä lajin tieteellinen nimi (esim. *Erithacus rubecula* punarinnalle):</p>
+<input type="text" id="speciesInput" placeholder="Kirjoita lajin nimi">
+<button onclick="fetchRecordings()">Hae äänitteet</button>
+
+<h2>Tulokset:</h2>
+<ul id="resultList"></ul>
+<script>
+function fetchRecordings() {
+	    const species = document.getElementById('speciesInput').value.trim();
+	const apiUrl = `https://xeno-canto.org/api/2/recordings?query=${species}`;
+
+    fetch(apiUrl)
+		.then(response => response.json())
+		.then(data => {
+			const resultList = document.getElementById('resultList');
+			resultList.innerHTML = '';
+			
+            if (data.recordings.length === 0) {
+				resultList.innerHTML = '<li>Ei äänitteitä löytynyt.</li>';
+				return;
+			}
+			
+			data.recordings.forEach(recording => {
+				const listItem = document.createElement('li');
+				listItem.innerHTML = `                    
+				<b>${recording.en} (${recording.gen} ${recording.sp})</b><br>
+				Laatu: ${recording.q} | Kesto: ${recording.length} <br>
+				<a href="https:${recording.file}" target="_blank">Kuuntele äänite</a>
+				`;                
+				resultList.appendChild(listItem);
+			});        
+		})        
+		.catch(error => {
+			console.error('Virhe haussa:', error);            
+			alert('Äänitteiden hakeminen epäonnistui.');        
+		});
+}
+</script>
+</body></html>
